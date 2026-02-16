@@ -27,6 +27,15 @@ typedef struct{
     int num_layers;
 }NetworkGradients;
 
+typedef struct {
+    int * layer_sizes;
+    int num_layers;
+    ActivationType * activations;
+    float learning_rate;
+}NetworkConfig;
+
+Network * network_create_from_config
+
 Network * network_create(int * layer_sizes, int num_layers);
 void network_free(Network * net);
 

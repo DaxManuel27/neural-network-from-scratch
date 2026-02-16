@@ -39,9 +39,9 @@ int main() {
     
     //training loop 
     float learning_rate = 0.01f;
-    int num_epochs = 1;
+    int num_epochs = 100;
 
-    for(int epoch; epoch < num_epochs; epoch++){
+    for(int epoch = 0; epoch < num_epochs; epoch++){
         float total_loss = 0.0f;
         int correct = 0;
 
@@ -98,13 +98,67 @@ int main() {
             (100.0f * correct) / train->count);
             
         }
+        // Load test data
+    printf("\nLoading test dataset...\n");
+    MNISTDataset *test = load_mnist_images("t10k-images-idx3-ubyte");
+    if (!test) {
+        printf("Failed to load test images\n");
+        return 1;
+    }
+    load_mnist_labels("t10k-labels-idx1-ubyte", test);
+    // Step 5: Test on test set
+    printf("\n=== Testing ===\n");
+    {
+        float test_loss = 0.0f;
+        int test_correct = 0;
+        
+        for (int img_idx = 0; img_idx < test->count; img_idx++) {
+            // Copy test image
+            for (int j = 0; j < 784; j++) {
+                image->data[j] = test->images[img_idx].pixels[j];
+            }
+            
+            // Forward pass only (no backprop)
+            network_forward(net, image);
+            Matrix *output = net->activations[net->num_layers - 1];
+            
+            // Calculate loss
+            float loss = calculate_loss(output, test->images[img_idx].label);
+            test_loss += loss;
+            
+            // Find predicted digit
+            int predicted_digit = 0;
+            float max_prob = output->data[0];
+            for (int d = 1; d < 10; d++) {
+                if (output->data[d] > max_prob) {
+                    max_prob = output->data[d];
+                    predicted_digit = d;
+                }
+            }
+            
+            // Check if correct
+            if (predicted_digit == test->images[img_idx].label) {
+                test_correct++;
+            }
+            
+            if ((img_idx + 1) % 2500 == 0) {
+                printf("  Tested %d images\n", img_idx + 1);
+            }
+        }
+        
+        printf("Test Loss: %.4f, Test Accuracy: %.2f%%\n", 
+               test_loss / test->count, 
+               (100.0f * test_correct) / test->count);
+    }
 
-
+    // Step 6: Cleanup
     printf("\nCleaning up...\n");
     matrix_free(image);
     network_free(net);
     mnist_dataset_free(train);
+    mnist_dataset_free(test);
     
     printf("Done!\n");
     return 0;
+
 }

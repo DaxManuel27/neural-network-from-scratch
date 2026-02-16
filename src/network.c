@@ -189,7 +189,8 @@ void network_update_weights(Network *net, NetworkGradients *grads, float learnin
             net->layers[i].weights->data[j] -= learning_rate * grads->gradients[i].dweights->data[j];
         }
         for(int j = 0; j < net->layers[i].bias->rows * net->layers[i].weights->cols; j++){
-            net->layers[i].bias->data[j] -= learning_rate * grads->gradients[i].dbias->data[j];
+            
         }
+
     }
 }
