@@ -34,7 +34,7 @@ typedef struct {
     float learning_rate;
 }NetworkConfig;
 
-Network * network_create_from_config
+Network * network_create_from_config(NetworkConfig * config)
 
 Network * network_create(int * layer_sizes, int num_layers);
 void network_free(Network * net);

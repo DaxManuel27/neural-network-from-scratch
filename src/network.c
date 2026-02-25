@@ -84,15 +84,6 @@ void network_forward(Network *net, Matrix *input) {
     }
 }
 
-float calculate_loss(Matrix * predictions, int true_label){
-    if(!predictions || true_label < 0 || true_label >=10){
-        return -0.1f;
-    }
-    float pred = predictions->data[true_label];
-    pred = fmax(pred, 1e-7f);
-    float loss = -log(pred);
-    return loss;
-}
 
 Matrix * output_gradient(Matrix * predictions, int true_label){
     if(!predictions || true_label < 0 || true_label >= 10){
