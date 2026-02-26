@@ -1,1 +1,5 @@
-## Neural network from scratch in C
+## Deep Learning Framework in C
+
+### Installation Guide
+
+### Documentation
